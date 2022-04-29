@@ -27,26 +27,36 @@ const data = [
   },
 ];
 
+const selectPanel = (id) => {
+  this.setState({
+   focused: id
+  });
+ }
+
 class Dashboard extends Component {
   state = { loading: false, focused: null };
   render() {
-    const dashboardClasses = classnames('dashboard');
+    const dashboardClasses = classnames('dashboard', {
+      'dashboard--focused': this.state.focused,
+    });
 
     if (this.state.loading) {
       return <Loading />;
     }
 
-    const panels = data.map((panel) => {
-      return (
-        <Panel
-          key={panel.id}
-          id={panel.id}
-          label={panel.label}
-          value={panel.value}
-        />
-      );
-    });
-
+    const panels = (
+      this.state.focused
+        ? data.filter((panel) => this.state.focused === panel.id)
+        : data
+    ).map((panel) => (
+      <Panel
+        key={panel.id}
+        id={panel.id}
+        label={panel.label}
+        value={panel.value}
+        onClick={this.setState(selectPanel(panel.id))
+      />
+    ));
     return <main className={dashboardClasses}>{panels}</main>;
   }
 }
